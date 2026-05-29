@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> GearSpace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        :root {
+            --purple-color: #6f42c1;
+            --dark-sidebar: #1a1d24;
+        }
+        body {
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        /* Desktop Sidebar Setup */
+        .sidebar {
+            width: 260px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background-color: var(--dark-sidebar);
+            color: #fff;
+            padding: 20px;
+            transition: all 0.3s ease;
+            z-index: 1050;
+        }
+        .sidebar h3 {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        .sidebar a {
+            display: block;
+            color: #a0aec0;
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: 0.2s;
+        }
+        .sidebar a:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+        /* Desktop Content Setup */
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        .topbar {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .topbar h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .dashboard-card {
+            background: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .btn-purple {
+            background-color: var(--purple-color);
+            color: white;
+        }
+        .btn-purple:hover {
+            background-color: #5a32a3;
+            color: white;
+        }
+        .text-purple {
+            color: var(--purple-color);
+        }
+
+        /* 📱 RESPONSIVE MOBILE FIXES (Para sa Cellphone Screen) */
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -260px; /* Automatic na nakatago sa labas ng screen */
+            }
+            .sidebar.show {
+                left: 0; /* Lalabas lang nang swabe kapag pinindot ang menu button */
+            }
+            .main-content {
+                margin-left: 0 !important; /* Tinanggal ang gap sa kaliwa para malinis */
+                padding: 15px;
+                width: 100%;
+            }
+            .topbar h1 {
+                font-size: 1.3rem;
+            }
+            /* Siguraduhing tago ang desktop table sa CP */
+            .desktop-table-view {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar" id="sidebar">
+        <button class="btn text-white d-md-none position-absolute end-0 top-0 mt-3 me-3" onclick="toggleSidebar()" style="font-size: 1.5rem; border: none; background: transparent;">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <h3><i class="bi bi-building-gear"></i> GearSpace</h3>
+        <a href="#dashboard"><i class="bi bi-grid"></i> Dashboard</a>
+        <a href="#add-item"><i class="bi bi-plus-circle"></i> Add Resource</a>
+        <a href="#items"><i class="bi bi-calendar-check"></i> Resource List</a>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <button class="menu-btn btn btn-dark d-md-none" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <h1> GearSpace Hub</h1>
+        </div>
+
+        <div class="row g-2 mb-4" id="dashboard">
+            <div class="col-6 col-md-3">
+                <div class="card dashboard-card h-100">
+                    <i class="bi bi-building"></i>
+                    <h6 class="mt-2 text-muted" style="font-size: 0.85rem;">Total Resources</h6>
+                    <h2>{{ total_items }}</h2>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card dashboard-card h-100 text-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <h6 class="mt-2 text-muted" style="font-size: 0.85rem;">Available</h6>
+                    <h2>{{ available_count }}</h2>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card dashboard-card h-100 text-danger">
+                    <i class="bi bi-bookmark-dash-fill"></i>
+                    <h6 class="mt-2 text-muted" style="font-size: 0.85rem;">Booked</h6>
+                    <h2>{{ booked_count }}</h2>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card dashboard-card h-100 text-warning">
+                    <i class="bi bi-tools"></i>
+                    <h6 class="mt-2 text-muted" style="font-size: 0.85rem;">Maintenance</h6>
+                    <h2>{{ maintenance_count }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-4 mb-4" id="add-item">
+            <h5 class="mb-3 fw-bold"><i class="bi bi-plus-circle"></i> Add Hub Resource</h5>
+            <form action="/create" method="POST">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <input type="text" name="item_name" class="form-control" placeholder="Resource Name (e.g. ComLab 1, Projector)" required>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="category" class="form-select" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="Room/Facility">Room / Facility</option>
+                            <option value="Equipment/Gear">Equipment / Gear</option>
+                            <option value="Laboratory">Laboratory</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="status" class="form-select" required>
+                            <option value="Available">Available</option>
+                            <option value="Booked">Booked</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="borrower" class="form-control" placeholder="Borrower Name (Optional)">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-purple w-100">Add Item</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card p-4" id="items">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2">
+                <h5 class="fw-bold m-0"><i class="bi bi-table"></i> Hub Resources List</h5>
+                <input type="text" id="searchInput" class="form-control w-100 w-md-25" placeholder="Search resources...">
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover align-middle d-none d-md-table desktop-table-view">
+                    <thead>
+                        <tr>
+                            <th>Resource/Room Name</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Borrower / Remarks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr class="product-row" data-id="{{ item.id }}">
+                            <td><input type="text" name="item_name" value="{{ item.item_name }}" class="form-control"></td>
+                            <td><input type="text" name="category" value="{{ item.category }}" class="form-control"></td>
+                            <td>
+                                <select name="status" class="form-select">
+                                    <option value="Available" {% if item.status == 'Available' %}selected{% endif %}>Available</option>
+                                    <option value="Booked" {% if item.status == 'Booked' %}selected{% endif %}>Booked</option>
+                                    <option value="Maintenance" {% if item.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                                </select>
+                            </td>
+                            <td><input type="text" name="borrower" value="{{ item.borrower if item.borrower else '' }}" class="form-control" placeholder="None"></td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <button type="button" class="btn btn-warning btn-update btn-sm">Update</button>
+                                    <form action="/delete/{{ item.id }}" method="POST" onsubmit="return confirm('Delete this resource?');" class="m-0">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="d-block d-md-none">
+                    {% for item in items %}
+                    <div class="card p-3 mb-3 product-row border" data-id="{{ item.id }}" style="border-radius: 10px; background: #fff;">
+                        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+                            <span class="fw-bold text-purple">Resource Hub Details</span>
+                            <div>
+                                {% if item.status == 'Available' %}
+                                    <span class="badge bg-success">Available</span>
+                                {% elif item.status == 'Booked' %}
+                                    <span class="badge bg-danger">Booked</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Maintenance</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="form-label small text-muted mb-0">Resource/Room Name</label>
+                            <input type="text" name="item_name" value="{{ item.item_name }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small text-muted mb-0">Category</label>
+                            <input type="text" name="category" value="{{ item.category }}" class="form-control form-control-sm">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small text-muted mb-0">Change Status</label>
+                            <select name="status" class="form-select form-select-sm">
+                                <option value="Available" {% if item.status == 'Available' %}selected{% endif %}>Available</option>
+                                <option value="Booked" {% if item.status == 'Booked' %}selected{% endif %}>Booked</option>
+                                <option value="Maintenance" {% if item.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted mb-0">Borrower / Remarks</label>
+                            <input type="text" name="borrower" value="{{ item.borrower if item.borrower else '' }}" class="form-control form-control-sm" placeholder="None">
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-warning btn-sm btn-update w-50">Save</button>
+                            <form action="/delete/{{ item.id }}" method="POST" onsubmit="return confirm('Delete this resource?');" class="w-50 m-0">
+                                <button type="submit" class="btn btn-danger btn-sm w-100">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div> 
+    </div> 
+
+    <script>
+        function toggleSidebar(){
+            document.getElementById("sidebar").classList.toggle("show");
+        }
+
+        // Live Local Search Filter
+        const searchInput = document.getElementById("searchInput");
+        if (searchInput) {
+            searchInput.addEventListener("keyup", function(){
+                const searchValue = searchInput.value.toLowerCase();
+                const rows = document.querySelectorAll(".product-row");
+
+                rows.forEach(row => {
+                    const nameInput = row.querySelector("input[name='item_name']");
+                    const categoryInput = row.querySelector("input[name='category']");
+                    
+                    const nameText = nameInput ? nameInput.value.toLowerCase() : "";
+                    const categoryText = categoryInput ? categoryInput.value.toLowerCase() : "";
+
+                    if (nameText.includes(searchValue) || categoryText.includes(searchValue)) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        }
+
+        // AJAX Update System
+        document.querySelectorAll(".btn-update").forEach(button => {
+            button.addEventListener("click", function() {
+                const row = this.closest(".product-row");
+                const itemId = row.getAttribute("data-id");
+
+                const itemName = row.querySelector("input[name='item_name']").value;
+                const category = row.querySelector("input[name='category']").value;
+                const status = row.querySelector("select[name='status']").value;
+                const borrower = row.querySelector("input[name='borrower']").value;
+
+                const formData = new FormData();
+                formData.append("item_name", itemName);
+                formData.append("category", category);
+                formData.append("status", status);
+                formData.append("borrower", borrower);
+
+                const originalText = this.innerText;
+                this.innerText = "Saving...";
+                this.disabled = true;
+
+                fetch(`/update/${itemId}`, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        this.innerText = "Saved!";
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    } else {
+                        alert("Update failed.");
+                        this.innerText = originalText;
+                        this.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    this.innerText = originalText;
+                    this.disabled = false;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
