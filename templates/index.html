@@ -12,80 +12,125 @@
         body {
             background: linear-gradient(135deg, #f5f7fb 0%, #ede9fe 100%);
             background-attachment: fixed;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #1f2937;
             transition: background 0.3s ease, color 0.3s ease;
         }
+
+        html { scroll-behavior: smooth; }
+
+        /* 🌙 Custom Dark Mode Themes */
         [data-bs-theme="dark"] body {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             color: #f3f4f6;
         }
-        [data-bs-theme="dark"] .card, [data-bs-theme="dark"] .sidebar { background: #1e293b !important; }
-        [data-bs-theme="dark"] .form-control, [data-bs-theme="dark"] .form-select { background-color: #0f172a; color: #f3f4f6; border-color: #475569; }
-        
-        .sidebar { width: 250px; height: 100vh; background: #111827; position: fixed; padding: 25px; color: white; z-index: 1000; }
-        .sidebar a { display: block; color: #d1d5db; text-decoration: none; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
-        .sidebar a:hover { background: #7c3aed; color: white; }
-        
-        .main-content { margin-left: 250px; padding: 30px; }
-        .card { border: none; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        [data-bs-theme="dark"] .card {
+            background: #1e293b;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        [data-bs-theme="dark"] .mobile-item-card {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        [data-bs-theme="dark"] .search-box .input-group-text,
+        [data-bs-theme="dark"] .input-group-text {
+            background-color: #1e293b;
+            border-color: #475569;
+            color: #94a3b8;
+        }
+        [data-bs-theme="dark"] .form-control,
+        [data-bs-theme="dark"] .form-select {
+            background-color: #0f172a;
+            border-color: #475569;
+            color: #f3f4f6;
+        }
+        [data-bs-theme="dark"] .dashboard-card h6 { color: #94a3b8; }
+
+        /* 📂 SIDEBAR SYSTEM */
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #111827;
+            position: fixed;
+            padding: 25px;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar h3 { font-weight: bold; margin-bottom: 40px; }
+        .sidebar a {
+            display: block; color: #d1d5db; text-decoration: none;
+            padding: 12px; border-radius: 10px; margin-bottom: 10px; transition: all 0.3s ease;
+        }
+        .sidebar a:hover { transform: translateX(5px); background: #7c3aed; color: white; }
+
+        /* 💻 MAIN CONTENT */
+        .main-content { margin-left: 250px; padding: 30px 15px 30px 20px; transition: all 0.3s ease; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .topbar h1 { font-size: 28px; font-weight: bold; margin: 0; }
+
+        .card { border: none; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: 0.3s; }
+        .card:hover { transform: translateY(-3px); }
+
+        .dashboard-card { padding: 25px; min-height: 160px; }
+        .dashboard-card i { font-size: 28px; display: block; margin-bottom: 15px; }
+        .dashboard-card h2 { font-size: 36px; font-weight: bold; margin-top: 10px; word-break: break-word; }
+        .dashboard-card h6 { margin: 0; color: #6b7280; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+
+        .card-total i, .card-total h2 { color: #7c3aed; }
+        .card-available i, .card-available h2 { color: #10b981; }
+        .card-booked i, .card-booked h2 { color: #ef4444; }
+        .card-maintenance i, .card-maintenance h2 { color: #f59e0b; }
+
+        /* 📊 TABLES & FORMS */
+        .table thead { background: #111827; color: white; }
+        .table th { font-weight: 600; padding: 15px 10px; }
         .btn-purple { background: #7c3aed; color: white; }
         .btn-purple:hover { background: #6d28d9; color: white; }
+        .form-control, .form-select { border-radius: 10px; padding: 10px 15px; }
+        .form-label { font-weight: 600; }
         .text-purple { color: #7c3aed !important; }
-        
-        .log-timeline { max-height: 280px; overflow-y: auto; padding-right: 5px; }
-        .log-item { padding: 10px; border-left: 3px solid #7c3aed; background: rgba(124, 58, 237, 0.05); margin-bottom: 8px; border-radius: 0 8px 8px 0; font-size: 14px; }
-        
-        @media (max-width: 768px) { .sidebar { display: none; } .main-content { margin-left: 0; } }
+
+        .search-box .input-group-text { border-top-left-radius: 10px; border-bottom-left-radius: 10px; background-color: #fff; }
+        .search-box .form-control { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+
+        @media print {
+            .sidebar, .topbar, #action-row-section, .btn, .actions-column, .search-box { display: none !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; }
+            .card { box-shadow: none !important; border: 1px solid #000 !important; }
+        }
+
+        /* 📱 RESPONSIVE MOBILE */
+        @media (max-width: 768px) {
+            .sidebar { left: -250px; width: 250px; }
+            .sidebar.show { left: 0; box-shadow: 5px 0 15px rgba(0, 0, 0, 0.25); }
+            .main-content { margin-left: 0 !important; padding: 15px !important; }
+            .topbar h1 { font-size: 1.15rem !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+            .dashboard-card { padding: 15px !important; min-height: auto !important; }
+            .dashboard-card i { font-size: 24px !important; margin-bottom: 10px !important; }
+            .dashboard-card h2 { font-size: 1.25rem !important; margin-top: 5px !important; }
+            table { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
 
-    {% if 'username' not in session %}
-    <div class="d-flex justify-content-center align-items-center vh-100 px-3">
-        <div class="card p-4 w-100" style="max-width: 420px;">
-            <div class="text-center mb-4">
-                <i class="fas fa-cubes text-purple fa-3x mb-2"></i>
-                <h3 class="fw-bold">GearSpace Hub</h3>
-                <p class="text-muted small">I-log in ang iyong system account upang magpatuloy</p>
-            </div>
-            
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, msg in messages %}
-                        <div class="alert alert-{{ category }} py-2 small text-center">{{ msg }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <form action="/login" method="POST">
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Username</label>
-                    <input type="text" name="username" class="form-control" placeholder="e.g. admin o student" required>
-                </div>
-                <div class="mb-4">
-                    <label class="form-label small fw-bold">Password</label>
-                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn btn-purple w-100 py-2 fw-semibold">Sign In</button>
-            </form>
-        </div>
-    </div>
-
-    {% else %}
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <h3>GearSpace</h3>
-        <p class="small text-muted"><i class="fas fa-user-circle me-1"></i> {{ session['username'] }} ({{ session['role'] }})</p>
-        <hr>
         <a href="#"><i class="fas fa-chart-pie me-2"></i> Dashboard</a>
-        <a href="/logout" class="text-danger mt-5"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
+        <a href="#action-row-section"><i class="fas fa-plus-circle me-2"></i> Add Resource</a>
+        <a href="#products"><i class="fas fa-boxes me-2"></i> Resource List</a>
     </div>
 
     <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="fw-bold m-0 fs-3">GearSpace Control Panel</h1>
-                <span class="badge bg-purple mt-1">Role: {{ session['role'] }} Control</span>
+        
+        <div class="topbar">
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-dark d-md-none menu-btn me-2" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>GearSpace Hub Dashboard</h1>
             </div>
             <button class="btn btn-outline-secondary rounded-circle px-3 py-2" id="themeToggle" onclick="toggleTheme()">
                 <i class="fas fa-moon"></i>
@@ -93,33 +138,65 @@
         </div>
 
         <div class="row g-3 mb-4">
-            <div class="col-6 col-md-3"><div class="card p-3 border-start border-primary border-3"><h6>Total</h6><h2>{{ total_items }}</h2></div></div>
-            <div class="col-6 col-md-3"><div class="card p-3 border-start border-success border-3"><h6>Available</h6><h2>{{ available_count }}</h2></div></div>
-            <div class="col-6 col-md-3"><div class="card p-3 border-start border-danger border-3"><h6>Booked</h6><h2>{{ booked_count }}</h2></div></div>
-            <div class="col-6 col-md-3"><div class="card p-3 border-start border-warning border-3"><h6>Maintenance</h6><h2>{{ maintenance_count }}</h2></div></div>
+            <div class="col-6 col-md-3">
+                <div class="card dashboard-card card-total">
+                    <div class="card-body p-0">
+                        <i class="fas fa-folder-open"></i>
+                        <h6>Total Resources</h6>
+                        <h2>{{ total_items }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card dashboard-card card-available">
+                    <div class="card-body p-0">
+                        <i class="fas fa-check-circle"></i>
+                        <h6>Available</h6>
+                        <h2>{{ available_count }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card dashboard-card card-booked">
+                    <div class="card-body p-0">
+                        <i class="fas fa-bookmark"></i>
+                        <h6>Booked</h6>
+                        <h2>{{ booked_count }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card dashboard-card card-maintenance">
+                    <div class="card-body p-0">
+                        <i class="fas fa-tools"></i>
+                        <h6>Maintenance</h6>
+                        <h2>{{ maintenance_count }}</h2>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="row g-4 mb-4">
+        <div class="row g-4 mb-4" id="action-row-section">
             <div class="col-lg-8">
                 <div class="card p-4 h-100">
-                    {% if session['role'] == 'Admin' %}
                     <h5 class="mb-4 text-purple fw-bold"><i class="fas fa-plus-circle me-2"></i>Add Hub Resource</h5>
                     <form action="/create" method="POST">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label small">Resource/Room Name</label>
+                                <label class="form-label">Resource/Room Name</label>
                                 <input type="text" name="item_name" class="form-control" placeholder="e.g. ComLab 1" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Category</label>
+                                <label class="form-label">Category</label>
                                 <select name="category" class="form-select" required>
+                                    <option value="" disabled selected>Select Category</option>
                                     <option value="Laboratory">Laboratory</option>
                                     <option value="Equipment/Gadget">Equipment/Gadget</option>
                                     <option value="Room/Facility">Room/Facility</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Status</label>
+                                <label class="form-label">Status</label>
                                 <select name="status" class="form-select">
                                     <option value="Available">Available</option>
                                     <option value="Booked">Booked</option>
@@ -127,81 +204,59 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label small">Borrower / Remarks</label>
+                                <label class="form-label">Borrower / Remarks</label>
                                 <input type="text" name="borrower" class="form-control" placeholder="Optional">
                             </div>
-                            <div class="col-6">
-                                <label class="form-label small">Start Date/Time</label>
-                                <input type="date" name="start_date" class="form-control">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label small">End Date/Time</label>
-                                <input type="date" name="end_date" class="form-control">
-                            </div>
                             <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-purple w-100 py-2 fw-semibold">Add Item</button>
+                                <button type="submit" class="btn btn-purple w-100 py-2 fw-semibold"><i class="fas fa-paper-plane me-1"></i> Add Item to Hub</button>
                             </div>
                         </div>
                     </form>
-                    {% else %}
-                    <div class="text-center my-auto py-5">
-                        <i class="fas fa-lock text-muted fa-3x mb-3"></i>
-                        <h5 class="fw-bold">View-Only Account Mode</h5>
-                        <p class="text-muted container-sm" style="max-width: 450px;">Naka-login ka bilang regular User. Pwede mong tingnan ang listahan at mga live charts sa ibaba ngunit ang Admin lamang ang may karapatang magbago ng data.</p>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
 
             <div class="col-lg-4">
-                <div class="card p-4 mb-3" style="min-height: 220px;">
-                    <h6 class="text-purple fw-bold mb-2"><i class="fas fa-chart-pie me-2"></i>Distribution</h6>
-                    <div style="position: relative; height: 140px;"><canvas id="statusChart"></canvas></div>
-                </div>
-                
-                <div class="card p-4">
-                    <h6 class="text-purple fw-bold mb-3"><i class="fas fa-history me-2"></i>Recent System Activity</h6>
-                    <div class="log-timeline">
-                        {% for log in logs %}
-                        <div class="log-item d-flex justify-content-between align-items-center">
-                            <span>{{ log.action }}</span>
-                            <span class="text-muted min-w-small font-monospace" style="font-size: 11px;">{{ log.timestamp }}</span>
-                        </div>
-                        {% else %}
-                        <p class="text-center text-muted small py-4">Wala pang naitalang aktibidad.</p>
-                        {% endfor %}
+                <div class="card p-4 h-100 d-flex flex-column justify-content-between align-items-center">
+                    <h5 class="text-purple fw-bold mb-3 w-100 text-start"><i class="fas fa-chart-pie me-2"></i>Status Distribution</h5>
+                    <div style="position: relative; width: 100%; height: 200px;" class="d-flex justify-content-center align-items-center">
+                        <canvas id="statusChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="card p-4" id="products">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
                 <h5 class="text-purple fw-bold m-0"><i class="fas fa-list-alt me-2"></i>Hub Resources List</h5>
-                <input type="text" id="searchInput" class="form-control w-25" placeholder="Search..." onkeyup="filterResources()">
+                <div class="d-flex gap-2 w-100 justify-content-md-end search-box" style="max-width: 500px;">
+                    <div class="input-group">
+                        <span class="input-group-text text-muted border-end-0"><i class="fas fa-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search resources..." onkeyup="filterResources()">
+                    </div>
+                    <button class="btn btn-outline-secondary px-3" onclick="window.print()">
+                        <i class="fas fa-print"></i>
+                    </button>
+                </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table align-middle" id="resourceTable">
+            <div class="table-responsive d-none d-md-block">
+                <table class="table align-middle table-hover" id="resourceTable">
                     <thead>
                         <tr>
                             <th>Resource/Room Name</th>
                             <th>Category</th>
                             <th>Status</th>
-                            <th>Borrower</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            {% if session['role'] == 'Admin' %}<th class="text-center">Actions</th>{% endif %}
+                            <th>Borrower / Remarks</th>
+                            <th class="actions-column text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in items %}
                         <tr>
-                            {% if session['role'] == 'Admin' %}
                             <form action="/update/{{ item.id }}" method="POST">
-                                <td><input type="text" name="item_name" class="form-control form-control-sm border-0 bg-transparent fw-semibold" value="{{ item.item_name }}"></td>
+                                <td><input type="text" name="item_name" class="form-control form-control-sm border-0 bg-transparent fw-semibold text-reset" value="{{ item.item_name }}"></td>
                                 <td>
-                                    <select name="category" class="form-select form-select-sm border-0 bg-transparent">
+                                    <select name="category" class="form-select form-select-sm border-0 bg-transparent text-reset">
                                         <option value="Laboratory" {% if item.category == 'Laboratory' %}selected{% endif %}>Laboratory</option>
                                         <option value="Equipment/Gadget" {% if item.category == 'Equipment/Gadget' %}selected{% endif %}>Equipment/Gadget</option>
                                         <option value="Room/Facility" {% if item.category == 'Room/Facility' %}selected{% endif %}>Room/Facility</option>
@@ -209,45 +264,81 @@
                                 </td>
                                 <td>
                                     <select name="status" class="form-select form-select-sm border-0 bg-transparent fw-bold {% if item.status == 'Available' %}text-success{% elif item.status == 'Booked' %}text-danger{% else %}text-warning{% endif %}">
-                                        <option value="Available" class="text-success" {% if item.status == 'Available' %}selected{% endif %}>Available</option>
-                                        <option value="Booked" class="text-danger" {% if item.status == 'Booked' %}selected{% endif %}>Booked</option>
-                                        <option value="Maintenance" class="text-warning" {% if item.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                                        <option value="Available" class="text-success fw-bold" {% if item.status == 'Available' %}selected{% endif %}>Available</option>
+                                        <option value="Booked" class="text-danger fw-bold" {% if item.status == 'Booked' %}selected{% endif %}>Booked</option>
+                                        <option value="Maintenance" class="text-warning fw-bold" {% if item.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
                                     </select>
                                 </td>
-                                <td><input type="text" name="borrower" class="form-control form-control-sm border-0 bg-transparent" value="{{ item.borrower or 'None' }}"></td>
-                                <td><input type="text" name="start_date" class="form-control form-control-sm border-0 bg-transparent" value="{{ item.start_date or 'N/A' }}"></td>
-                                <td><input type="text" name="end_date" class="form-control form-control-sm border-0 bg-transparent" value="{{ item.end_date or 'N/A' }}"></td>
-                                <td class="text-center">
+                                <td><input type="text" name="borrower" class="form-control form-control-sm border-0 bg-transparent text-reset" value="{{ item.borrower or 'None' }}"></td>
+                                <td class="actions-column text-center">
                                     <div class="d-flex justify-content-center gap-1">
-                                        <button type="submit" class="btn btn-warning btn-sm px-2">Update</button>
+                                        <button type="submit" class="btn btn-warning btn-sm fw-semibold px-3">Update</button>
                             </form>
                                         <form action="/delete/{{ item.id }}" method="POST" onsubmit="return confirm('Sigurado ka ba?');" class="m-0">
-                                            <button type="submit" class="btn btn-danger btn-sm px-2">Delete</button>
+                                            <button type="submit" class="btn btn-danger btn-sm fw-semibold px-3">Delete</button>
                                         </form>
                                     </div>
                                 </td>
-                            {% else %}
-                            <td class="fw-semibold text-purple">{{ item.item_name }}</td>
-                                <td>{{ item.category }}</td>
-                                <td><span class="badge {% if item.status == 'Available' %}bg-success{% elif item.status == 'Booked' %}bg-danger{% else %}bg-warning text-dark{% endif %}">{{ item.status }}</span></td>
-                                <td>{{ item.borrower or 'None' }}</td>
-                                <td>{{ item.start_date or 'N/A' }}</td>
-                                <td>{{ item.end_date or 'N/A' }}</td>
-                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+
+            <div class="d-md-none">
+                {% for item in items %}
+                <div class="card p-3 mb-3 mobile-item-card resource-card-item">
+                    <form action="/update/{{ item.id }}" method="POST">
+                        <div class="mb-2">
+                            <label class="text-muted small d-block">Resource Name</label>
+                            <input type="text" name="item_name" class="form-control form-control-sm fw-bold border-0 p-0 bg-transparent text-purple" value="{{ item.item_name }}">
+                        </div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label class="text-muted small d-block">Category</label>
+                                <select name="category" class="form-select form-select-sm border-0 p-0 bg-transparent text-reset">
+                                    <option value="Laboratory" {% if item.category == 'Laboratory' %}selected{% endif %}>Laboratory</option>
+                                    <option value="Equipment/Gadget" {% if item.category == 'Equipment/Gadget' %}selected{% endif %}>Equipment/Gadget</option>
+                                    <option value="Room/Facility" {% if item.category == 'Room/Facility' %}selected{% endif %}>Room/Facility</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="text-muted small d-block">Status</label>
+                                <select name="status" class="form-select form-select-sm border-0 p-0 bg-transparent fw-bold {% if item.status == 'Available' %}text-success{% elif item.status == 'Booked' %}text-danger{% else %}text-warning{% endif %}">
+                                    <option value="Available" class="text-success" {% if item.status == 'Available' %}selected{% endif %}>Available</option>
+                                    <option value="Booked" class="text-danger" {% if item.status == 'Booked' %}selected{% endif %}>Booked</option>
+                                    <option value="Maintenance" class="text-warning" {% if item.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-muted small d-block">Borrower / Remarks</label>
+                            <input type="text" name="borrower" class="form-control form-control-sm border-0 p-0 bg-transparent text-reset" value="{{ item.borrower or 'None' }}">
+                        </div>
+                        <div class="d-flex gap-2 pt-2 border-top">
+                            <button type="submit" class="btn btn-warning btn-sm w-50 fw-semibold">Update</button>
+                    </form>
+                            <form action="/delete/{{ item.id }}" method="POST" onsubmit="return confirm('Sigurado ka ba?');" class="w-50 m-0">
+                                <button type="submit" class="btn btn-danger btn-sm w-100 fw-semibold">Delete</button>
+                            </form>
+                        </div>
+                </div>
+                {% endfor %}
+            </div>
+
         </div>
     </div>
-    {% endif %}
 
     <script>
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('show'); }
+
         function filterResources() {
             let input = document.getElementById('searchInput').value.toLowerCase();
             document.querySelectorAll('#resourceTable tbody tr').forEach(row => {
                 row.style.display = row.innerText.toLowerCase().includes(input) ? '' : 'none';
+            });
+            document.querySelectorAll('.resource-card-item').forEach(card => {
+                card.style.display = card.innerText.toLowerCase().includes(input) ? '' : 'none';
             });
         }
 
@@ -257,27 +348,45 @@
             html.setAttribute('data-bs-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             document.querySelector('#themeToggle i').className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            if (typeof statusChart !== 'undefined') {
+                statusChart.options.plugins.legend.labels.color = newTheme === 'dark' ? '#f3f4f6' : '#1f2937';
+                statusChart.update();
+            }
         }
 
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('#themeToggle i').className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
 
-        // Chart Loader
-        const ctx = document.getElementById('statusChart');
-        if (ctx) {
-            new Chart(ctx.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Available', 'Booked', 'Maintenance'],
-                    datasets: [{
-                        data: [{{ available_count or 0 }}, {{ booked_count or 0 }}, {{ maintenance_count or 0 }}],
-                        backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
-                        borderWidth: 0
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
-            });
-        }
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        const statusChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Available', 'Booked', 'Maintenance'],
+                datasets: [{
+                    data: [{{ available_count }}, {{ booked_count }}, {{ maintenance_count }}],
+                    backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: savedTheme === 'dark' ? '#f3f4f6' : '#1f2937',
+                            font: { size: 12, weight: '600' },
+                            padding: 15
+                        }
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
