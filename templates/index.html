@@ -1,30 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GearSpace Hub</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        /* =========================================================
-           🌐 GLOBAL STYLES & UPGRADED BACKGROUND
-           ========================================================= */
         body {
             background: linear-gradient(135deg, #f5f7fb 0%, #ede9fe 100%);
             background-attachment: fixed;
             font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: #1f2937;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
-        /* =========================================================
-           📂 SIDEBAR SYSTEM (With Added Icon Spaces)
-           ========================================================= */
+        /* 🌙 Custom Dark Mode Themes */
+        [data-bs-theme="dark"] body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #f3f4f6;
+        }
+        [data-bs-theme="dark"] .card {
+            background: #1e293b;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        [data-bs-theme="dark"] .mobile-item-card {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        [data-bs-theme="dark"] .search-box .input-group-text,
+        [data-bs-theme="dark"] .input-group-text {
+            background-color: #1e293b;
+            border-color: #475569;
+            color: #94a3b8;
+        }
+        [data-bs-theme="dark"] .form-control,
+        [data-bs-theme="dark"] .form-select {
+            background-color: #0f172a;
+            border-color: #475569;
+            color: #f3f4f6;
+        }
+        [data-bs-theme="dark"] .dashboard-card h6 { color: #94a3b8; }
+
+        /* 📂 SIDEBAR SYSTEM */
         .sidebar {
             width: 250px;
             height: 100vh;
@@ -36,261 +58,59 @@
             z-index: 1000;
         }
 
-        .sidebar h3 {
-            font-weight: bold;
-            margin-bottom: 40px;
-        }
-
+        .sidebar h3 { font-weight: bold; margin-bottom: 40px; }
         .sidebar a {
-            display: block;
-            color: #d1d5db;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
+            display: block; color: #d1d5db; text-decoration: none;
+            padding: 12px; border-radius: 10px; margin-bottom: 10px; transition: all 0.3s ease;
         }
+        .sidebar a:hover { transform: translateX(5px); background: #7c3aed; color: white; }
 
-        .sidebar a:hover {
-            transform: translateX(5px);
-            background: #7c3aed;
-            color: white;
-        }
+        /* 💻 MAIN CONTENT */
+        .main-content { margin-left: 250px; padding: 30px 15px 30px 20px; transition: all 0.3s ease; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .topbar h1 { font-size: 28px; font-weight: bold; margin: 0; }
 
-        /* =========================================================
-           💻 MAIN CONTENT & COMPONENT CARDS
-           ========================================================= */
-        .main-content {
-            margin-left: 250px;
-            padding: 30px 15px 30px 20px; 
-            transition: all 0.3s ease;
-        }
+        .card { border: none; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); transition: 0.3s; }
+        .card:hover { transform: translateY(-3px); }
 
-        .topbar {
-            display: flex;
-            justify-content: flex-start; 
-            align-items: center;
-            margin-bottom: 30px;
-            gap: 15px;
-        }
+        .dashboard-card { padding: 25px; min-height: 160px; }
+        .dashboard-card i { font-size: 28px; display: block; margin-bottom: 15px; }
+        .dashboard-card h2 { font-size: 36px; font-weight: bold; margin-top: 10px; word-break: break-word; }
+        .dashboard-card h6 { margin: 0; color: #6b7280; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
 
-        .topbar h1 {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-        }
-
-        .dashboard-card {
-            padding: 25px;
-            min-height: 160px;
-        }
-
-        .dashboard-card i {
-            font-size: 28px;
-            display: block;
-            margin-bottom: 15px;
-        }
-
-        .dashboard-card h2 {
-            font-size: 36px;
-            font-weight: bold;
-            margin-top: 10px;
-            word-break: break-word;
-        }
-
-        .dashboard-card h6 {
-            margin: 0;
-            color: #6b7280;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-        }
-
-        /* 🎨 Custom Colors para sa Status Cards */
         .card-total i, .card-total h2 { color: #7c3aed; }
         .card-available i, .card-available h2 { color: #10b981; }
         .card-booked i, .card-booked h2 { color: #ef4444; }
         .card-maintenance i, .card-maintenance h2 { color: #f59e0b; }
 
-        /* =========================================================
-           📊 TABLES & FORMS
-           ========================================================= */
-        .table thead {
-            background: #111827;
-            color: white;
-        }
+        /* 📊 TABLES & FORMS */
+        .table thead { background: #111827; color: white; }
+        .table th { font-weight: 600; padding: 15px 10px; }
+        .btn-purple { background: #7c3aed; color: white; }
+        .btn-purple:hover { background: #6d28d9; color: white; }
+        .form-control, .form-select { border-radius: 10px; padding: 10px 15px; }
+        .form-label { font-weight: 600; }
+        .text-purple { color: #7c3aed !important; }
 
-        .table th {
-            font-weight: 600;
-            padding: 15px 10px;
-        }
+        .search-box .input-group-text { border-top-left-radius: 10px; border-bottom-left-radius: 10px; background-color: #fff; }
+        .search-box .form-control { border-top-left-radius: 0; border-bottom-left-radius: 0; }
 
-        .btn-purple {
-            background: #7c3aed;
-            color: white;
-        }
-
-        .btn-purple:hover {
-            background: #6d28d9;
-            color: white;
-        }
-
-        .form-control, .form-select {
-            border-radius: 10px;
-            padding: 10px 15px;
-        }
-
-        .badge {
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-
-        .product-name {
-            max-width: 180px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        #products {
-            margin-bottom: 40px;
-        }
-
-        .mobile-item-card {
-            border: 1px solid #e5e7eb !important;
-            background: #ffffff !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
-            border-radius: 12px !important;
-        }
-
-        .text-purple {
-            color: #7c3aed !important;
-        }
-            
-        .form-label {
-            font-weight: 600;
-        }
-
-        /* Input Group styling para sa search icon */
-        .search-box .input-group-text {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-            background-color: #fff;
-        }
-        .search-box .form-control {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        /* Hide objects during print report operation */
         @media print {
-            .sidebar, .topbar, #add-resource-section, .btn, .actions-column, .search-box {
-                display: none !important;
-            }
-            .main-content {
-                margin-left: 0 !important;
-                padding: 0 !important;
-            }
-            .card {
-                box-shadow: none !important;
-                border: 1px solid #000 !important;
-            }
+            .sidebar, .topbar, #action-row-section, .btn, .actions-column, .search-box { display: none !important; }
+            .main-content { margin-left: 0 !important; padding: 0 !important; }
+            .card { box-shadow: none !important; border: 1px solid #000 !important; }
         }
 
-        /* =========================================================
-           📱 RESPONSIVE MOBILE INTERFACE
-           ========================================================= */
+        /* 📱 RESPONSIVE MOBILE */
         @media (max-width: 768px) {
-            .sidebar {
-                left: -250px;
-                width: 250px;
-            }
-
-            .sidebar h3 {
-                margin-top: 20px !important;
-            }
-
-            .sidebar.show {
-                left: 0;
-                box-shadow: 5px 0 15px rgba(0, 0, 0, 0.25);
-            }
-
-            .main-content {
-                margin-left: 0 !important;
-                padding: 15px !important;
-            }
-
-            .topbar {
-                display: flex !important;
-                justify-content: flex-start !important;
-                align-items: center !important;
-                gap: 10px !important;
-                margin-bottom: 20px !important;
-                width: 100% !important;
-            }
-
-            .topbar h1 {
-                font-size: 1.15rem !important; 
-                margin: 0 !important;
-                margin-left: 0 !important; 
-                white-space: nowrap !important;
-                overflow: hidden !important;
-                text-overflow: ellipsis !important;
-            }
-
-            .menu-btn {
-                margin-right: 5px !important;
-                flex-shrink: 0 !important;
-            }
-
-            .dashboard-card {
-                padding: 15px !important;
-                min-height: auto !important;
-                margin-bottom: 0 !important;
-            }
-
-            .dashboard-card i {
-                font-size: 24px !important;
-                margin-bottom: 10px !important;
-            }
-
-            .dashboard-card h6 {
-                font-size: 0.7rem !important;
-            }
-
-            .dashboard-card h2 {
-                font-size: 1.25rem !important;
-                margin-top: 5px !important;
-            }
-
-            .card.p-4 {
-                padding: 15px !important;
-            }
-
-            #products .w-25 {
-                width: 100% !important;
-            }
-
-            .table-responsive {
-                margin-top: 10px;
-            }
-
-            table {
-                font-size: 13px;
-            }
+            .sidebar { left: -250px; width: 250px; }
+            .sidebar.show { left: 0; box-shadow: 5px 0 15px rgba(0, 0, 0, 0.25); }
+            .main-content { margin-left: 0 !important; padding: 15px !important; }
+            .topbar h1 { font-size: 1.15rem !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+            .dashboard-card { padding: 15px !important; min-height: auto !important; }
+            .dashboard-card i { font-size: 24px !important; margin-bottom: 10px !important; }
+            .dashboard-card h2 { font-size: 1.25rem !important; margin-top: 5px !important; }
+            table { font-size: 13px; }
         }
     </style>
 </head>
@@ -299,17 +119,22 @@
     <div class="sidebar" id="sidebar">
         <h3>GearSpace</h3>
         <a href="#"><i class="fas fa-chart-pie me-2"></i> Dashboard</a>
-        <a href="#add-resource-section"><i class="fas fa-plus-circle me-2"></i> Add Resource</a>
+        <a href="#action-row-section"><i class="fas fa-plus-circle me-2"></i> Add Resource</a>
         <a href="#products"><i class="fas fa-boxes me-2"></i> Resource List</a>
     </div>
 
     <div class="main-content">
         
         <div class="topbar">
-            <button class="btn btn-dark d-md-none menu-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-dark d-md-none menu-btn me-2" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>GearSpace Hub Dashboard</h1>
+            </div>
+            <button class="btn btn-outline-secondary rounded-circle px-3 py-2" id="themeToggle" onclick="toggleTheme()">
+                <i class="fas fa-moon"></i>
             </button>
-            <h1>GearSpace Hub Dashboard</h1>
         </div>
 
         <div class="row g-3 mb-4">
@@ -351,52 +176,64 @@
             </div>
         </div>
 
-        <div class="card p-4 mb-4" id="add-resource-section">
-            <h5 class="mb-4 text-purple fw-bold"><i class="fas fa-plus-circle me-2"></i>Add Hub Resource</h5>
-            <form action="/create" method="POST">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-3">
-                        <label class="form-label">Resource/Room Name</label>
-                        <input type="text" name="item_name" class="form-control" placeholder="e.g. ComLab 1, Projector" required>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Category</label>
-                        <select name="category" class="form-select" required>
-                            <option value="" disabled selected>Select Category</option>
-                            <option value="Laboratory">Laboratory</option>
-                            <option value="Equipment/Gadget">Equipment/Gadget</option>
-                            <option value="Room/Facility">Room/Facility</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Status</label>
-                        <select name="status" class="form-select">
-                            <option value="Available">Available</option>
-                            <option value="Booked">Booked</option>
-                            <option value="Maintenance">Maintenance</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Borrower / Remarks</label>
-                        <input type="text" name="borrower" class="form-control" placeholder="Optional">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-purple w-100 py-2 fw-semibold"><i class="fas fa-paper-plane me-1"></i> Add Item</button>
+        <div class="row g-4 mb-4" id="action-row-section">
+            <div class="col-lg-8">
+                <div class="card p-4 h-100">
+                    <h5 class="mb-4 text-purple fw-bold"><i class="fas fa-plus-circle me-2"></i>Add Hub Resource</h5>
+                    <form action="/create" method="POST">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Resource/Room Name</label>
+                                <input type="text" name="item_name" class="form-control" placeholder="e.g. ComLab 1" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Category</label>
+                                <select name="category" class="form-select" required>
+                                    <option value="" disabled selected>Select Category</option>
+                                    <option value="Laboratory">Laboratory</option>
+                                    <option value="Equipment/Gadget">Equipment/Gadget</option>
+                                    <option value="Room/Facility">Room/Facility</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Status</label>
+                                <select name="status" class="form-select">
+                                    <option value="Available">Available</option>
+                                    <option value="Booked">Booked</option>
+                                    <option value="Maintenance">Maintenance</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Borrower / Remarks</label>
+                                <input type="text" name="borrower" class="form-control" placeholder="Optional">
+                            </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-purple w-100 py-2 fw-semibold"><i class="fas fa-paper-plane me-1"></i> Add Item to Hub</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card p-4 h-100 d-flex flex-column justify-content-between align-items-center">
+                    <h5 class="text-purple fw-bold mb-3 w-100 text-start"><i class="fas fa-chart-pie me-2"></i>Status Distribution</h5>
+                    <div style="position: relative; width: 100%; height: 200px;" class="d-flex justify-content-center align-items-center">
+                        <canvas id="statusChart"></canvas>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
 
         <div class="card p-4" id="products">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
                 <h5 class="text-purple fw-bold m-0"><i class="fas fa-list-alt me-2"></i>Hub Resources List</h5>
-                
                 <div class="d-flex gap-2 w-100 justify-content-md-end search-box" style="max-width: 500px;">
                     <div class="input-group">
                         <span class="input-group-text text-muted border-end-0"><i class="fas fa-search"></i></span>
                         <input type="text" id="searchInput" class="form-control border-start-0" placeholder="Search resources..." onkeyup="filterResources()">
                     </div>
-                    <button class="btn btn-outline-secondary px-3" onclick="window.print()" title="Print Report">
+                    <button class="btn btn-outline-secondary px-3" onclick="window.print()">
                         <i class="fas fa-print"></i>
                     </button>
                 </div>
@@ -416,33 +253,28 @@
                     <tbody>
                         {% for item in items %}
                         <tr>
-                            <form action="/update/{{ item.id }}" method="POST" id="form-{{ item.id }}">
+                            <form action="/update/{{ item.id }}" method="POST">
+                                <td><input type="text" name="item_name" class="form-control form-control-sm border-0 bg-transparent fw-semibold text-reset" value="{{ item.item_name }}"></td>
                                 <td>
-                                    <input type="text" name="item_name" class="form-control form-control-sm border-0 bg-transparent fw-semibold" value="{{ item.item_name }}">
-                                </td>
-                                <td>
-                                    <select name="category" class="form-select form-select-sm border-0 bg-transparent">
+                                    <select name="category" class="form-select form-select-sm border-0 bg-transparent text-reset">
                                         <option value="Laboratory" {% if item.category == 'Laboratory' %}selected{% endif %}>Laboratory</option>
                                         <option value="Equipment/Gadget" {% if item.category == 'Equipment/Gadget' %}selected{% endif %}>Equipment/Gadget</option>
                                         <option value="Room/Facility" {% if item.category == 'Room/Facility' %}selected{% endif %}>Room/Facility</option>
                                     </select>
                                 </td>
                                 <td>
-                                    <select name="status" class="form-select form-select-sm border-0 bg-transparent fw-bold 
-                                        {% if item.status == 'Available' %}text-success{% elif item.status == 'Booked' %}text-danger{% else %}text-warning{% endif %}">
+                                    <select name="status" class="form-select form-select-sm border-0 bg-transparent fw-bold {% if item.status == 'Available' %}text-success{% elif item.status == 'Booked' %}text-danger{% else %}text-warning{% endif %}">
                                         <option value="Available" class="text-success fw-bold" {% if item.status == 'Available' %}selected{% endif %}>Available</option>
                                         <option value="Booked" class="text-danger fw-bold" {% if item.status == 'Booked' %}selected{% endif %}>Booked</option>
                                         <option value="Maintenance" class="text-warning fw-bold" {% if item.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
                                     </select>
                                 </td>
-                                <td>
-                                    <input type="text" name="borrower" class="form-control form-control-sm border-0 bg-transparent" value="{{ item.borrower or 'None' }}">
-                                </td>
+                                <td><input type="text" name="borrower" class="form-control form-control-sm border-0 bg-transparent text-reset" value="{{ item.borrower or 'None' }}"></td>
                                 <td class="actions-column text-center">
                                     <div class="d-flex justify-content-center gap-1">
                                         <button type="submit" class="btn btn-warning btn-sm fw-semibold px-3">Update</button>
-                                    </form>
-                                        <form action="/delete/{{ item.id }}" method="POST" onsubmit="return confirm('Sigurado ka bang buburahin mo ito?');" class="m-0">
+                            </form>
+                                        <form action="/delete/{{ item.id }}" method="POST" onsubmit="return confirm('Sigurado ka ba?');" class="m-0">
                                             <button type="submit" class="btn btn-danger btn-sm fw-semibold px-3">Delete</button>
                                         </form>
                                     </div>
@@ -453,7 +285,7 @@
                 </table>
             </div>
 
-            <div class="d-md-none" id="mobileCardsContainer">
+            <div class="d-md-none">
                 {% for item in items %}
                 <div class="card p-3 mb-3 mobile-item-card resource-card-item">
                     <form action="/update/{{ item.id }}" method="POST">
@@ -464,7 +296,7 @@
                         <div class="row g-2 mb-2">
                             <div class="col-6">
                                 <label class="text-muted small d-block">Category</label>
-                                <select name="category" class="form-select form-select-sm border-0 p-0 bg-transparent">
+                                <select name="category" class="form-select form-select-sm border-0 p-0 bg-transparent text-reset">
                                     <option value="Laboratory" {% if item.category == 'Laboratory' %}selected{% endif %}>Laboratory</option>
                                     <option value="Equipment/Gadget" {% if item.category == 'Equipment/Gadget' %}selected{% endif %}>Equipment/Gadget</option>
                                     <option value="Room/Facility" {% if item.category == 'Room/Facility' %}selected{% endif %}>Room/Facility</option>
@@ -472,8 +304,7 @@
                             </div>
                             <div class="col-6">
                                 <label class="text-muted small d-block">Status</label>
-                                <select name="status" class="form-select form-select-sm border-0 p-0 bg-transparent fw-bold
-                                    {% if item.status == 'Available' %}text-success{% elif item.status == 'Booked' %}text-danger{% else %}text-warning{% endif %}">
+                                <select name="status" class="form-select form-select-sm border-0 p-0 bg-transparent fw-bold {% if item.status == 'Available' %}text-success{% elif item.status == 'Booked' %}text-danger{% else %}text-warning{% endif %}">
                                     <option value="Available" class="text-success" {% if item.status == 'Available' %}selected{% endif %}>Available</option>
                                     <option value="Booked" class="text-danger" {% if item.status == 'Booked' %}selected{% endif %}>Booked</option>
                                     <option value="Maintenance" class="text-warning" {% if item.status == 'Maintenance' %}selected{% endif %}>Maintenance</option>
@@ -482,7 +313,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="text-muted small d-block">Borrower / Remarks</label>
-                            <input type="text" name="borrower" class="form-control form-control-sm border-0 p-0 bg-transparent" value="{{ item.borrower or 'None' }}">
+                            <input type="text" name="borrower" class="form-control form-control-sm border-0 p-0 bg-transparent text-reset" value="{{ item.borrower or 'None' }}">
                         </div>
                         <div class="d-flex gap-2 pt-2 border-top">
                             <button type="submit" class="btn btn-warning btn-sm w-50 fw-semibold">Update</button>
@@ -499,29 +330,63 @@
     </div>
 
     <script>
-        // Sidebar responsive switch trigger
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('show');
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('show'); }
 
-        // Live Real-Time Frontend Filter Search Logic (Dynamic for both Desktop & Mobile)
         function filterResources() {
             let input = document.getElementById('searchInput').value.toLowerCase();
-            
-            // Desktop Filter
-            let tableRows = document.querySelectorAll('#resourceTable tbody tr');
-            tableRows.forEach(row => {
-                let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(input) ? '' : 'none';
+            document.querySelectorAll('#resourceTable tbody tr').forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(input) ? '' : 'none';
             });
-
-            // Mobile Filter
-            let mobileCards = document.querySelectorAll('.resource-card-item');
-            mobileCards.forEach(card => {
-                let text = card.innerText.toLowerCase();
-                card.style.display = text.includes(input) ? '' : 'none';
+            document.querySelectorAll('.resource-card-item').forEach(card => {
+                card.style.display = card.innerText.toLowerCase().includes(input) ? '' : 'none';
             });
         }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const newTheme = html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.querySelector('#themeToggle i').className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            if (typeof statusChart !== 'undefined') {
+                statusChart.options.plugins.legend.labels.color = newTheme === 'dark' ? '#f3f4f6' : '#1f2937';
+                statusChart.update();
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('#themeToggle i').className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        });
+
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        const statusChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Available', 'Booked', 'Maintenance'],
+                datasets: [{
+                    data: [{{ available_count }}, {{ booked_count }}, {{ maintenance_count }}],
+                    backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: savedTheme === 'dark' ? '#f3f4f6' : '#1f2937',
+                            font: { size: 12, weight: '600' },
+                            padding: 15
+                        }
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>
