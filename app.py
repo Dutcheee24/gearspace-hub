@@ -1,80 +1,71 @@
-from flask import Flask, render_template, redirect, url_for, request
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.secret_key = 'gearspace_secret_key'
 
-# Konektado sa iyong local MySQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/flask_db'
+# =========================================================
+# 🛠️ DATABASE CONFIGURATION (SMART ROUTING)
+# =========================================================
+database_url = os.environ.get('DATABASE_URL')
+
+if database_url:
+    # Kung nasa Render (PostgreSQL), inaayos ang prefix para sa SQLAlchemy
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Kung nasa laptop (XAMPP), gagamitin ang lokal na MySQL mo bilang backup
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/booking_system'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Binagong Model para sa Facilities at Equipment
-class BookingItem(db.Model):
+# =========================================================
+# 🗂️ DATABASE MODEL (Para sa inyong Booking System)
+# =========================================================
+class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    item_name = db.Column(db.String(100), nullable=False)  # Hal. Gymnasium, Projector
-    category = db.Column(db.String(100), nullable=False)   # Hal. Facility, Equipment
-    status = db.Column(db.String(50), nullable=False, default="Available") # Available, Booked, Maintenance
-    borrower = db.Column(db.String(100), nullable=True, default="") # Pangalan ng nag-book o hiram
+    customer_name = db.Column(db.String(100), nullable=False)
+    item_name = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(50), default='Pending')
 
-with app.app_context():
-     db.create_all()
+    def __repr__(self):
+        return f'<Booking {self.id}>'
 
+# =========================================================
+# 🌐 ROUTES / PAGES
+# =========================================================
 @app.route('/')
 def index():
-    items = BookingItem.query.all()
-    total_items = len(items)
-    available_count = len([i for i in items if i.status == "Available"])
-    booked_count = len([i for i in items if i.status == "Booked"])
-    maintenance_count = len([i for i in items if i.status == "Maintenance"])
+    # Ilo-load nito ang index.html mula sa templates folder mo
+    try:
+        bookings = Booking.query.all()
+        return render_template('index.html', bookings=bookings)
+    except Exception as e:
+        # Kung may error sa pagbasa ng db sa simula, ire-render pa rin ang page
+        return render_template('index.html')
 
-    return render_template(
-        'index.html',
-        items=items,
-        total_items=total_items,
-        available_count=available_count,
-        booked_count=booked_count,
-        maintenance_count=maintenance_count
-    )
+# Isang simpleng halimbawang link kung sakaling magse-send kayo ng data mula sa HTML niyo
+@app.route('/add_booking', methods=['POST'])
+def add_booking():
+    if request.method == 'POST':
+        name = request.form.get('customer_name')
+        item = request.form.get('item_name')
+        
+        if name and item:
+            new_booking = Booking(customer_name=name, item_name=item)
+            db.session.add(new_booking)
+            db.session.commit()
+            flash('Booking successfully added!')
+        return redirect(url_for('index'))
 
-@app.route('/create', methods=['POST'])
-def create_item():
-    item_name = request.form['item_name']
-    category = request.form['category']
-    status = request.form['status']
-    borrower = request.form.get('borrower', '')
-
-    new_item = BookingItem(
-        item_name=item_name,
-        category=category,
-        status=status,
-        borrower=borrower
-    )
-
-    db.session.add(new_item)
-    db.session.commit()
-    return redirect(url_for('index'))
-
-@app.route('/update/<int:item_id>', methods=['POST'])
-def update_item(item_id):
-    item = BookingItem.query.get(item_id)
-
-    if item:
-        item.item_name = request.form['item_name']
-        item.category = request.form['category']
-        item.status = request.form['status']
-        item.borrower = request.form.get('borrower', '')
-
-        db.session.commit()
-
-    return redirect(url_for('index'))
-
-@app.route('/delete/<int:item_id>', methods=['POST'])
-def delete_item(item_id):
-    item = BookingItem.query.get(item_id)
-    if item:
-       db.session.delete(item)
-       db.session.commit()
-    return redirect(url_for('index'))
-
+# =========================================================
+# 🚀 PAGPAPATAKBO NG APP (AUTO-CREATE TABLES)
+# =========================================================
 if __name__ == '__main__':
-   app.run(host='0.0.0.0', port=5000, debug=True)
+    with app.app_context():
+        db.create_all()  # Kusang gagawa ng tables sa database para hindi mag-error!
+        
+    app.run(debug=True)
